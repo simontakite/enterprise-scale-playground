@@ -10,14 +10,14 @@
           "listOfAllowedLocations": [
             "norwayeast",
             "norwaywest",
-            "europe"
+            "northeurope"
           ]
         },
         "Deny-RSG-Locations": {
           "listOfAllowedLocations": [
             "norwayeast",
             "norwaywest",
-            "europe"
+            "northeurope"
           ]
         }
       },
