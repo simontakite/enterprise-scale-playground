@@ -20,7 +20,7 @@ on:
 jobs:
 
   build:
-    name: Lint code base
+    name: Validate code base
     runs-on: ubuntu-latest
 
     steps:
