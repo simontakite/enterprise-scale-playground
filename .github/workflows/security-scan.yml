@@ -6,7 +6,7 @@ name: Security Scan
 ##########################################
 on:
   push:
-    branches-ignore:
+    branches:
       - main
       - release/**
   pull_request:
@@ -24,7 +24,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Terraform security scan
-        uses: triat/terraform-security-scan@v1.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Terraform Security Scan
+        uses: tfsec/tfsec-sarif-action@master
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Terraform security scan
+#        uses: triat/terraform-security-scan@v1.2
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
