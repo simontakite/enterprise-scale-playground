@@ -1,0 +1,58 @@
+---
+name: Code Review
+
+##########################################
+# Start the job on push for all branches #
+##########################################
+on:
+  push:
+    branches:
+      - main
+      - release/**
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: { }
+
+###############
+# Set the Job #
+###############
+jobs:
+
+  lint:
+    name: validate-tf
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Run github/super-linter
+        uses: docker://github/super-linter:v4.1.0
+        env:
+          # Lint all code
+          VALIDATE_ALL_CODEBASE: true
+          # Need to define main branch as default is set to master in super-linter
+          DEFAULT_BRANCH: main
+          # Enable setting the status of each individual linter run in the Checks section of a pull request
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # The following linter types will be enabled:
+          VALIDATE_BASH: true
+          VALIDATE_BASH_EXEC: true
+          VALIDATE_JSON: true
+          VALIDATE_MARKDOWN: true
+          VALIDATE_POWERSHELL: true
+          VALIDATE_TERRAFORM: true
+          VALIDATE_YAML: true
+
+  tfsec:
+    name: tf-security-scan
+    runs-on: ubuntu-latest
+    needs: validate-tf
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Terraform Security Scan
+        uses: tfsec/tfsec-sarif-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
