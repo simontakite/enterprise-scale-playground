@@ -2,6 +2,12 @@
 # version and features{} block.
 
 terraform {
+  backend "azurerm" {
+    resource_group_name  = "devopstfstate"
+    storage_account_name = "devopsconstorageaccount"
+    container_name       = "devopsconsultstfstate"
+    key                  = "enterprise-scale-playground.tfstate"
+  }
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
