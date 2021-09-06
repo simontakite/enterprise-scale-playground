@@ -2,14 +2,14 @@
 name: Code Review
 
 ##########################################
-# Start the job on push for all branches #
+# Start jobs on push main branch         #
 ##########################################
 
 on:
   workflow_dispatch: { }
   push:
     branches:
-      - '!main'
+      - main
 
 env:
   TF_CLI_ARGS: '-no-color'
@@ -21,6 +21,9 @@ env:
   #TFVARS_PATH: '/tf/caf/caf-landingzone-example'
   #TF_VAR_workspace: 'sandpit'
 
+################
+# Set the Jobs #
+################
 jobs:
   lint:
     name: Codebase Validation
@@ -67,6 +70,7 @@ jobs:
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v1
         with:
+          # Path to SARIF file relative to the root of the repository
           sarif_file: tfsec.sarif
 
   terraform:
@@ -79,6 +83,8 @@ jobs:
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
       #TF_WORKSPACE: dev
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
         shell: bash
@@ -88,6 +94,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: 'Terraform Format'
+        #if: github.event_name == 'pull_request'
         id: format
         uses: hashicorp/terraform-github-actions@master
         with:
@@ -95,6 +102,7 @@ jobs:
           tf_actions_subcommand: 'fmt'
           tf_actions_working_dir: '.'
       - name: 'Terraform Init'
+        #if: github.event_name == 'pull_request'
         id: init
         uses: hashicorp/terraform-github-actions@master
         with:
@@ -102,6 +110,7 @@ jobs:
           tf_actions_subcommand: 'init'
           tf_actions_working_dir: '.'
       - name: 'Terraform Validate'
+        #if: github.event_name == 'pull_request'
         id: validate
         uses: hashicorp/terraform-github-actions@master
         with:
@@ -109,9 +118,18 @@ jobs:
           tf_actions_subcommand: 'validate'
           tf_actions_working_dir: '.'
       - name: 'Terraform Plan'
+        #if: github.event_name == 'pull_request'
         id: plan
         uses: hashicorp/terraform-github-actions@master
         with:
           tf_actions_version: 1.0.6
           tf_actions_subcommand: 'plan'
+          tf_actions_working_dir: '.'
+      - name: Terraform Apply
+        if: github.event.pull_request.merged == true
+        id: apply
+        uses: hashicorp/terraform-github-actions@master
+        with:
+          tf_actions_version: 1.0.6
+          tf_actions_subcommand: 'apply'
           tf_actions_working_dir: '.'
