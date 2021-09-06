@@ -5,10 +5,10 @@ name: Code Review
 # Start the job on push for all branches #
 ##########################################
 on:
-  push:
-    branches-ignore:
-      - main
-      - release/**
+#  push:
+#    branches-ignore:
+#      - main
+#      - release/**
   pull_request:
     branches:
       - main
