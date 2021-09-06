@@ -15,8 +15,11 @@ name: Code Review
 #  workflow_dispatch: { }
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: { }
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
@@ -103,7 +106,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: 'Terraform Format'
-        if: github.event_name == 'pull_request'
+        #if: github.event_name == 'pull_request'
         id: format
         uses: hashicorp/terraform-github-actions@master
         with:
@@ -111,7 +114,7 @@ jobs:
           tf_actions_subcommand: 'fmt'
           tf_actions_working_dir: '.'
       - name: 'Terraform Init'
-        if: github.event_name == 'pull_request'
+        #if: github.event_name == 'pull_request'
         id: init
         uses: hashicorp/terraform-github-actions@master
         with:
@@ -119,7 +122,7 @@ jobs:
           tf_actions_subcommand: 'init'
           tf_actions_working_dir: '.'
       - name: 'Terraform Validate'
-        if: github.event_name == 'pull_request'
+        #if: github.event_name == 'pull_request'
         id: validate
         uses: hashicorp/terraform-github-actions@master
         with:
@@ -127,7 +130,7 @@ jobs:
           tf_actions_subcommand: 'validate'
           tf_actions_working_dir: '.'
       - name: 'Terraform Plan'
-        if: github.event_name == 'pull_request'
+        #if: github.event_name == 'pull_request'
         id: plan
         uses: hashicorp/terraform-github-actions@master
         with:
@@ -136,7 +139,7 @@ jobs:
           tf_actions_working_dir: '.'
       # https://learn.hashicorp.com/tutorials/terraform/github-actions
       - name: Update Pull Request
-        if: github.event_name == 'pull_request'
+        #if: github.event_name == 'pull_request'
         id: pull
         uses: actions/github-script@0.9.0
         env:
@@ -169,11 +172,11 @@ jobs:
       #        if: steps.plan.outcome == 'failure'
       #        run: exit 1
       - name: Terraform Apply
-        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+        if: github.event.pull_request.merged == true
         id: apply
         uses: hashicorp/terraform-github-actions@master
         with:
           tf_actions_version: 1.0.6
           tf_actions_subcommand: 'apply'
           tf_actions_working_dir: '.'
-          #########
+          ##########
