@@ -34,7 +34,7 @@ module "enterprise_scale" {
   # landing zones
   custom_landing_zones = {
     "${var.root_id}-production-landing-zone" = {
-      display_name               = "${upper(var.root_id)} Production"
+      display_name               = "${upper(var.root_id)} Production Env"
       parent_management_group_id = "${var.root_id}-landing-zones"
       subscription_ids           = []
       archetype_config = {
@@ -44,7 +44,7 @@ module "enterprise_scale" {
       }
     }
     "${var.root_id}-test-landing-zone" = {
-      display_name               = "${upper(var.root_id)} Test"
+      display_name               = "${upper(var.root_id)} Test Env"
       parent_management_group_id = "${var.root_id}-landing-zones"
       subscription_ids           = []
       archetype_config = {
@@ -54,7 +54,7 @@ module "enterprise_scale" {
       }
     }
     "${var.root_id}-development-landing-zone" = {
-      display_name               = "${upper(var.root_id)} Development"
+      display_name               = "${upper(var.root_id)} Development Env"
       parent_management_group_id = "${var.root_id}-landing-zones"
       subscription_ids           = []
       archetype_config = {
