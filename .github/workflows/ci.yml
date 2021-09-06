@@ -1,5 +1,5 @@
 ---
-name: Code Review
+name: Terraform CI
 
 ##########################################
 # Start the job on push for all branches #
@@ -25,7 +25,6 @@ jobs:
   lint:
     name: Codebase Validation
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -50,8 +49,6 @@ jobs:
           VALIDATE_YAML: true
   tfsec:
     name: TF Security Scan
-    if: github.event_name == 'pull_request'
-    id: tfsec
     runs-on: ubuntu-latest
     needs: lint
     steps:

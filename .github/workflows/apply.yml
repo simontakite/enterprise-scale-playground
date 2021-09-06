@@ -1,5 +1,5 @@
 ---
-name: Code Review
+name: Terraform CI/CD
 
 ##########################################
 # Start jobs on push main branch         #
