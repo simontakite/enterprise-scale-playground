@@ -4,15 +4,21 @@ name: Code Review
 ##########################################
 # Start the job on push for all branches #
 ##########################################
+#on:
+#  push:
+#    branches-ignore:
+#      - main
+#      - release/**
+#  pull_request:
+#    branches:
+#      - main
+#  workflow_dispatch: { }
+
 on:
+  workflow_dispatch:
   push:
-    branches-ignore:
-      - main
-      - release/**
-  pull_request:
     branches:
       - main
-  workflow_dispatch: { }
 
 env:
   TF_CLI_ARGS: '-no-color'
@@ -157,7 +163,7 @@ jobs:
         if: steps.plan.outcome == 'failure'
         run: exit 1
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
         uses: hashicorp/terraform-github-actions@master
         with:
           tf_actions_version: 1.0.6
