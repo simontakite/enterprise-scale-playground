@@ -1,6 +1,5 @@
 ---
 name: Terraform CI/CD
-
 ##########################################
 # Start jobs on push main branch         #
 ##########################################
@@ -21,9 +20,6 @@ env:
   #TFVARS_PATH: '/tf/caf/caf-landingzone-example'
   #TF_VAR_workspace: 'sandpit'
 
-################
-# Set the Jobs #
-################
 jobs:
   lint:
     name: Codebase Validation
@@ -53,8 +49,6 @@ jobs:
           VALIDATE_YAML: true
   tfsec:
     name: TF Security Scan
-    if: github.event_name == 'pull_request'
-    id: tfsec
     runs-on: ubuntu-latest
     needs: lint
     steps:
@@ -94,7 +88,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: 'Terraform Format'
-        #if: github.event_name == 'pull_request'
         id: format
         uses: hashicorp/terraform-github-actions@master
         with:
@@ -102,7 +95,6 @@ jobs:
           tf_actions_subcommand: 'fmt'
           tf_actions_working_dir: '.'
       - name: 'Terraform Init'
-        #if: github.event_name == 'pull_request'
         id: init
         uses: hashicorp/terraform-github-actions@master
         with:
@@ -110,7 +102,6 @@ jobs:
           tf_actions_subcommand: 'init'
           tf_actions_working_dir: '.'
       - name: 'Terraform Validate'
-        #if: github.event_name == 'pull_request'
         id: validate
         uses: hashicorp/terraform-github-actions@master
         with:
@@ -118,7 +109,6 @@ jobs:
           tf_actions_subcommand: 'validate'
           tf_actions_working_dir: '.'
       - name: 'Terraform Plan'
-        #if: github.event_name == 'pull_request'
         id: plan
         uses: hashicorp/terraform-github-actions@master
         with:
@@ -126,7 +116,6 @@ jobs:
           tf_actions_subcommand: 'plan'
           tf_actions_working_dir: '.'
       - name: Terraform Apply
-        if: github.event.pull_request.merged == true
         id: apply
         uses: hashicorp/terraform-github-actions@master
         with:
